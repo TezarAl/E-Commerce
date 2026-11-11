@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keranjang Belanja</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* --- GAYA UMUM --- */
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #f5f5f5;
+    }
+
+    .container {
+        width: 90%;
+        max-width: 800px;
+        margin: auto;
+        padding-top: 30px;
+        padding-bottom: 50px;
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #333;
+    }
+
+    /* --- ITEM KERANJANG --- */
+    .cart-item {
+        background: white;
+        padding: 15px;
+        margin-bottom: 15px;
+        border-radius: 10px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .cart-item img {
+        width: 90px;
+        height: 90px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .item-info {
+        flex: 1;
+    }
+
+    .item-info h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .price {
+        font-weight: bold;
+        margin-top: 5px;
+        color: #0066ff;
+    }
+
+    .qty-controls {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .qty-controls button {
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: #333;
+        color: white;
+        border-radius: 5px;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .qty-controls button:hover {
+        background: #000;
+    }
+
+    .delete-btn {
+        color: red;
+        cursor: pointer;
+        font-size: 20px;
+        transition: color 0.2s;
+    }
+    .delete-btn:hover {
+        color: #cc0000;
+    }
+
+    /* --- TOTAL & CHECKOUT --- */
+    .total-box {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 20px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .total-box h3 {
+        margin: 0 0 10px 0;
+    }
+
+    .checkout-btn {
+        display: block;
+        width: 100%;
+        padding: 12px;
+        border: none;
+        background: #0066ff;
+        color: white;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background 0.2s;
+    }
+    .checkout-btn:hover {
+        background: #0050cc;
+    }
+
+    /* --- GAYA STRUK PEMBAYARAN --- */
+    #receipt-display {
+        margin-top: 30px;
+        background: #fff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    #receipt-display img {
+        max-width: 180px; 
+        height: auto;
+        /* Hapus border bawaan, gunakan shadow atau border lain */
+        border: none; 
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛒 Keranjang Belanja</h2>
+
+    <div id="cart-list"></div>
+
+    <div class="total-box">
+        <div style="margin-bottom: 15px;">
+            <label for="payment-method" style="display: block; text-align: left; font-weight: bold;">Pilih Pembayaran:</label>
+            <select id="payment-method" style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 100%; margin-top: 5px; font-size: 16px;">
+                <option value="QRIS">QRIS</option>
+                <option value="BANK_TRANSFER">Transfer Bank</option>
+            </select>
+        </div>
+        
+        <h3>Total: <span id="total-price">Rp0</span></h3>
+        <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+    
+    <div id="receipt-display"></div>
+</div>
+
+<script>
+// =========================
+// DATA DUMMY UNTUK PENGUJIAN (Hapus baris di bawah ini setelah pengujian)
+// Jika Anda ingin keranjang terisi otomatis saat membuka halaman:
+/*
+if (!localStorage.getItem("cart")) {
+    localStorage.setItem("cart", JSON.stringify([
+        {
+            name: "Sepatu Lari X",
+            price: 550000,
+            qty: 1,
+            image: "https://via.placeholder.com/90/007bff/ffffff?text=Sepatu"
+        },
+        {
+            name: "Buku Novel Terbaru",
+            price: 95000,
+            qty: 2,
+            image: "https://via.placeholder.com/90/28a745/ffffff?text=Buku"
+        }
+    ]));
+}
+*/
+// =========================
+
+// =========================
+// 1. LOAD DATA KERANJANG
+// =========================
+function loadCart() {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartList = document.getElementById("cart-list");
+    let totalPrice = document.getElementById("total-price");
+    
+    cartList.innerHTML = "";
+    let total = 0;
+
+    if (cart.length === 0) {
+        cartList.innerHTML = '<p style="text-align: center; color: #555;">Keranjang belanja Anda kosong.</p>';
+        document.querySelector('.total-box').style.display = 'none'; 
+    } else {
+        document.querySelector('.total-box').style.display = 'block';
+    }
+
+    cart.forEach((item, index) => {
+        total += item.price * item.qty;
+
+        cartList.innerHTML += `
+            <div class="cart-item">
+                <img src="${item.image}">
+                <div class="item-info">
+                    <h3>${item.name}</h3>
+                    <div class="price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                </div>
+
+                <div class="qty-controls">
+                    <button onclick="changeQty(${index}, -1)">-</button>
+                    <span>${item.qty}</span>
+                    <button onclick="changeQty(${index}, 1)">+</button>
+                </div>
+
+                <i class="fa-solid fa-trash delete-btn" onclick="deleteItem(${index})"></i>
+            </div>
+        `;
+    });
+
+    totalPrice.textContent = "Rp " + total.toLocaleString('id-ID');
+}
+
+// =========================
+// 2. UBAH QUANTITY
+// =========================
+function changeQty(index, amount) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart[index].qty += amount;
+
+    if (cart[index].qty <= 0) {
+        deleteItem(index);
+        return; 
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+}
+
+// =========================
+// 3. HAPUS PRODUK
+// =========================
+function deleteItem(index) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+    loadCart();
+}
+
+// =========================
+// 4. CHECKOUT
+// =========================
+function checkout() {
+    // 1. Hapus struk sebelumnya jika ada
+    document.getElementById("receipt-display").innerHTML = "";
+    
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let selectedMethod = document.getElementById("payment-method").value;
+
+    if (cart.length === 0) {
+        alert("Keranjang belanja kosong. Silakan tambahkan produk.");
+        return;
+    }
+
+    let total = 0;
+    cart.forEach(item => {
+        total += item.price * item.qty;
+    });
+
+    let orderDetails = {
+        items: cart,
+        total: total,
+        paymentMethod: selectedMethod,
+        orderDate: new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' })
+    };
+
+    // 2. Tampilkan Struk Pembayaran
+    showReceipt(orderDetails);
+    
+    // 3. Hapus Keranjang (local storage) setelah struk ditampilkan
+    localStorage.removeItem("cart");
+    
+    // 4. Muat ulang keranjang (agar keranjang di tampilan menjadi kosong)
+    loadCart(); 
+}
+
+// =========================
+// 5. TAMPILKAN STRUK PEMBAYARAN
+// =========================
+function showReceipt(order) {
+    // GANTI URL INI dengan kode QRIS milik Anda
+    const QRIS_URL = "https://via.placeholder.com/180/00838f/ffffff?text=QRIS+ANDA"; 
+    
+    let receiptHTML = `
+        <h3 style="text-align: center; border-bottom: 2px solid #ccc; padding-bottom: 10px; margin-bottom: 15px;">🧾 Struk Pembayaran</h3>
+        <p><strong>Tanggal Pesanan:</strong> ${order.orderDate}</p>
+        <p><strong>Metode Pembayaran:</strong> ${order.paymentMethod === 'BANK_TRANSFER' ? 'Transfer Bank' : 'QRIS'}</p>
+        <hr style="border: 0; border-top: 1px solid #eee;">
+        <h4>Detail Produk:</h4>
+        <ul style="list-style: none; padding: 0;">
+`;
+    
+    // DETAIL ITEM
+    order.items.forEach(item => {
+        let subtotal = item.price * item.qty;
+        receiptHTML += `
+            <li style="margin-bottom: 8px; overflow: auto;">
+                ${item.name} (x${item.qty}) 
+                <span style="float: right;">Rp ${item.price.toLocaleString('id-ID')} = <strong>Rp ${subtotal.toLocaleString('id-ID')}</strong></span>
+            </li>
+        `;
+    });
+    
+    receiptHTML += `
+        </ul>
+        <hr style="border: 0; border-top: 2px dashed #000; margin: 15px 0;">
+        <h3 style="text-align: right; color: #cc0000;">TOTAL BAYAR: Rp ${order.total.toLocaleString('id-ID')}</h3>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f9f9f9; border-radius: 8px;">
+`;
+
+    // INSTRUKSI PEMBAYARAN BERDASARKAN METODE
+    if (order.paymentMethod === 'BANK_TRANSFER') {
+        receiptHTML += `
+            <p style="font-weight: bold; text-align: center; margin-top: 0;">INSTRUKSI TRANSFER BANK</p>
+            <p style="text-align: center;">Harap transfer sebesar **Rp ${order.total.toLocaleString('id-ID')}** ke rekening di bawah ini:</p>
+            <div style="text-align: center; margin: 15px 0; border: 1px solid #ddd; padding: 10px; border-radius: 5px; background: #fff;">
+                <strong style="display: block; font-size: 18px; color: #333;">BANK BCA</strong>
+                <strong style="display: block; font-size: 24px; color: #0066ff; margin: 5px 0;">0987-6543-21</strong>
+                <span style="display: block;">SWENT</span>
+            </div>
+            <p style="font-size: 14px; text-align: center; color: #cc0000;">**PENTING:** Mohon transfer sesuai nominal total di atas.</p>
+        `;
+    } else if (order.paymentMethod === 'QRIS') {
+        receiptHTML += `
+            <p style="font-weight: bold; text-align: center; margin-top: 0;">SCAN UNTUK BAYAR VIA QRIS</p>
+            <p style="font-size: 14px; text-align: center;">Masukkan jumlah pembayaran: **Rp ${order.total.toLocaleString('id-ID')}**</p>
+            <div style="text-align: center; margin: 15px 0;">
+                <img src="img/qr-code.png" 
+                     alt="Kode QRIS Pembayaran" 
+                     style="max-width: 180px; height: auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+            </div>
+        `;
+    }
+
+    receiptHTML += `
+        </div>
+        
+        <div style="text-align: center; margin-top: 25px; padding: 15px; border-top: 1px solid #eee; background: #e0f7fa; border-radius: 8px;">
+            <p style="font-size: 18px; color: #00838f; margin: 0;">🎉 **TERIMA KASIH! PESANAN ANDA SUDAH KAMI TERIMA.**</p>
+            <p style="font-size: 14px; margin-top: 5px; color: #455a64;">Mohon selesaikan pembayaran sesuai instruksi di atas. Kami akan segera memproses pesanan Anda!</p>
+        </div>
+    `;
+
+    // Masukkan struk ke dalam div #receipt-display
+    document.getElementById("receipt-display").innerHTML = receiptHTML;
+
+    // Scroll ke struk
+    document.getElementById("receipt-display").scrollIntoView({ behavior: 'smooth' });
+}
+
+// Load saat halaman dibuka
+loadCart();
+</script>
+
+</body>
+</html>

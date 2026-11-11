@@ -1,0 +1,317 @@
+*{
+  font-family: "League Spartan";
+  margin: 0;
+  padding: 0;
+}
+
+body{
+  width: 100%;
+}
+
+
+#irow{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 80px;
+  background-color: #C0C0C0;
+  z-index: 999;
+  position: sticky;
+  top: 0;
+  left: 0;
+  }
+  #nav{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #nav li{
+    list-style: none;
+    padding: 0 20px;
+  }
+  #nav li a{
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+    color: black
+  }
+  #nav li a:hover{
+    color: antiquewhite;
+  }
+
+  #iklan{
+    background-image: url(img/Grey\ Minimalist\ Special\ Offer\ Banner\ Landscape\ \(3\).png );
+    height: 90vh;
+    background-size: cover;
+    padding: 0 80px;
+    display: flex;
+    background-position: top 25% right 0;
+    flex-direction: column;
+    align-items: self-start;
+    justify-content: center;
+  }
+  #iklan h4{
+    padding-bottom: 15px;
+    font-size: 20px;
+    line-height: 54px;
+}
+
+  #iklan h1{
+    color: antiquewhite;
+    font-size: 50px;
+   line-height: 64px;
+  }
+  
+#kh1{
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+#kcon{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 40px;
+}
+
+#kh1{
+  margin-top: 20px;
+}
+#kbox{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 30px;
+  min-height: 150px;
+  width: 150px;
+  text-decoration: none;
+  color: black;
+}
+#kbox img{
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  object-position: center;
+}
+
+#kbox span{
+  margin-top: 10px;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#produk{
+  margin: 20px;
+  text-align: center;
+}
+#produk .pkon{
+  display: flex;
+  justify-content: space-between;
+  padding-top: 20px;
+  flex-wrap: wrap;
+}
+#ph1{
+    margin-top: 20px;
+    text-align: center;
+}
+#ph2{
+  margin-top: 9px;
+  font-size: medium;
+}
+#produk .pro{
+  margin-top: 15px;
+  width: 20%;
+  min-width: 250px;
+  padding: 10px 10px;
+  border: 1px solid #cce7d0;
+  border-radius: 20px;
+}
+#produk .pro img{
+  width: 59%;
+  border-radius: 20px;
+  border-radius: 10px;
+}
+#produk .pro #desk{
+  text-align: center;
+  
+  
+}
+#produk .pro #desk h5{
+  padding-top: 7px;
+  font-size: 14px;
+}
+#produk .pro #desk #star{
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+#produk .pro #desk h4{
+  padding-bottom: 4px;
+  color: green;
+}
+#produk .pro #desk .i{
+  width: 40px;
+  height: 40px;
+  line-height: 40px;
+  color: rgb(8, 204, 8);
+  border-radius: 50px;
+  cursor: pointer;
+}
+#produk .pro #desk .cartt:hover{
+  transform: scale(1.2);
+}
+
+.bs1{
+  margin: 48px 0;
+}
+#banner{
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  text-align: center;
+  flex-direction: column;
+  background-image: url(img/b1.jpg);
+  width: 100%;
+  height: 40vh;
+  background-position: center;
+  background-size: cover;
+}
+#banner h3{
+  color: white;
+  font-size: 29px;
+  align-items: center;
+  justify-content: center;
+}
+#banner h1{
+  color: white;
+  padding: 10px;
+}
+#banner h1 span{
+  color: red;
+}
+#banner h4{
+  color: red;
+  font-size: large;
+}
+
+.hform{
+  margin-top: 20px;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+#loginForm{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 20px;
+  flex-direction: column;
+}
+
+
+#bl{
+  margin-top: 20px;
+  width: 90px;
+  height: 40px;
+  border: none;
+  border-radius: 20px;
+  font-family: 'League Spartan';
+  font-weight: bold;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#bl:hover{
+  background-color: #c7d1c9;
+  transform: scale(1.2);
+}
+.ntg input{
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+  width: 200px;
+  height: 20px;
+  padding: 5px;
+  border-radius: 20px;
+  margin-bottom: 10px;
+  outline: none;
+}
+.ptg input{
+   display: flex;
+  justify-content: center;
+  align-items: center;  
+  width: 200px;
+  height: 20px;
+  padding: 5px;
+  border-radius: 20px;
+  outline: none;
+}
+
+
+#message{
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 18px;
+}
+#carip {
+  display: flex;
+  align-items: center;
+}
+
+#search-item {
+  padding: 10px 15px;
+  width: 250px;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  font-family: 'League Spartan', sans-serif;
+  transition: 0.3s;
+}
+
+#search-item:focus {
+  outline: none;
+  width: 300px;
+  border-color: #ff4d4d;
+}
+
+ .pro a{
+  border: none;
+  border-radius: 50%;
+  margin-top: 10px;
+  text-decoration: none;
+  color: rgb(14, 202, 14);
+  cursor: pointer;
+  box-shadow: 2px 4px 5px 1px;
+}
+.pro a:hover{
+  transform: scale(1.4);
+}
+
+select{
+  margin-top: 5px;
+  border-radius: 10px;
+  border: none;
+  box-shadow: 3px;
+}
+
+
+.fa-cart-shopping {
+  position: relative;
+}
+
+.fa-cart-shopping::after {
+  content: attr(data-count);
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  height: 10px;
+}
